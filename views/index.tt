@@ -1,0 +1,53 @@
+<header>
+   <h1>[% revision.commit_message %]</h1> 
+</header>
+
+<nav>
+    [% IF revision.previous %] <a href="/revision/[% revision.previous %]">previous</a> [% END %]
+
+    <button id="show_diff"    type="button">Diff</button>
+    <button id="show_current" type="button">Current</button>
+    <button id="show_compare" type="button">Compare</button>
+
+    [% IF revision.next %] <a href="/revision/[% revision.next %]">next</a> [% END %]
+</nav>
+
+<main>
+    <section class="mvc current">
+        <iframe src="/mvc-current/index.html"></iframe>
+    </section>
+
+    <section class="mvc base">
+        <iframe src="/mvc-base/index.html"></iframe>
+    </section>
+
+    <section id="changes">
+        <ul class="diffs">
+            [% FOR diff IN revision.diff %]
+                <li>
+                    <ul class="lines">
+                        [% FOR line IN diff %]
+                            <li class="change [% line.type | lower %]">
+                                <pre>[% line.content %]</pre>
+                            </li>
+                        [% END %]
+                    </ul>
+                </li>
+            [% END %]
+        </ul>
+    </section>
+<main>
+
+<script>
+    window.addEventListener('DOMContentLoaded', function (event) {
+        var container = document.querySelector('body');
+        container.className = 'show_diff';
+
+        var buttons = document.querySelectorAll('button');
+        for (var i = 0, j = buttons.length; i < j; i++) {
+            buttons[i].addEventListener('click', function (event) {
+                container.className = this.id;
+            });        
+        }
+    });
+</script>
